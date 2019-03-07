@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = "A thin abstraction layer for writing API's in Rails. "
   s.license     = "MIT"
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md"]
 
   s.add_dependency "rails", "> 4.2"
 end
