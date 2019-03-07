@@ -3,7 +3,7 @@ class BaseController < ::ApplicationController
   RESOURCE_CLASS = nil # Class
   RESOURCE_NAME_SINGULAR = nil # Symbol
   RESOURCE_NAME_PLURAL = nil # Symbol
-  RESOURCE_VIEW_NAME = nil # Symbol
+  RESOURCE_VIEW = nil # Symbol
 
   def index
     if can? :read, self.class::RESOURCE_CLASS
@@ -14,7 +14,7 @@ class BaseController < ::ApplicationController
         value = true if value == 'true'
         value = false if value == 'false'
         @generic_resources = @generic_resources.send("filter_#{key}", value)
-        render "api/v1/#{self.class::RESOURCE_VIEW_NAME}/index"
+        render "api/v1/#{self.class::RESOURCE_VIEW}/index"
       end
     else
       render json: {error: :forbidden}, status: :forbidden
@@ -24,7 +24,7 @@ class BaseController < ::ApplicationController
   def show
     if can? :read, self.class::RESOURCE_CLASS
       @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
-      render "api/v1/#{self.class::RESOURCE_VIEW_NAME}/show"
+      render "api/v1/#{self.class::RESOURCE_VIEW}/show"
     else
       render json: {error: :forbidden}, status: :forbidden
     end
@@ -66,7 +66,7 @@ class BaseController < ::ApplicationController
     if can? :create, self.class::RESOURCE_CLASS
       @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
       if @generic_resource.update_attributes(resource_params)
-        render "api/v1/#{self.class::RESOURCE_VIEW_NAME}/show"
+        render "api/v1/#{self.class::RESOURCE_VIEW}/show"
       else
         render json: @generic_resource.errors.as_json, status: :unprocessable_entity
       end
