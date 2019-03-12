@@ -33,7 +33,7 @@ class BaseController < ::ApplicationController
   def new
     if can? :create, self.class::RESOURCE_CLASS
       @generic_resource = self.class::RESOURCE_CLASS.new
-      render "api/v1/#{self.class::RESOURCE_NAME_PLURAL}/show"
+      render "api/v1/#{self.class::RESOURCE_VIEW}/show"
     else
       render json: {error: :forbidden}, status: :forbidden
     end
@@ -43,7 +43,7 @@ class BaseController < ::ApplicationController
     if can? :create, self.class::RESOURCE_CLASS
       @generic_resource = self.class::RESOURCE_CLASS.new(resource_params)
       if @generic_resource.save
-        render "api/v1/#{self.class::RESOURCE_NAME_PLURAL}/show"
+        render "api/v1/#{self.class::RESOURCE_VIEW}/show"
       else
         render json: @generic_resource.errors.as_json, status: :unprocessable_entity
       end
