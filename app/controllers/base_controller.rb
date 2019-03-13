@@ -1,4 +1,6 @@
-class BaseController < ::ApplicationController
+class BaseController < ActionController::Base
+
+  protect_from_forgery with: :null_session
 
   RESOURCE_CLASS = nil # Class
   RESOURCE_NAME_SINGULAR = nil # Symbol
