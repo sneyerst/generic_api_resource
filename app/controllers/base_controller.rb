@@ -13,11 +13,13 @@ class BaseController < ActionController::Base
       @filters = params
       filter_params.keys.each do |key|
         value = filter_params[key]
-        value = true if value == 'true'
-        value = false if value == 'false'
-        @generic_resources = @generic_resources.send("filter_#{key}", value)
-        render "api/v1/#{self.class::RESOURCE_VIEW}/index"
+        if value.present?
+          value = true if value == 'true'
+          value = false if value == 'false'
+          @generic_resources = @generic_resources.send("filter_#{key}", value)
+        end
       end
+      render "api/v1/#{self.class::RESOURCE_VIEW}/index"
     else
       render json: {error: :forbidden}, status: :forbidden
     end
