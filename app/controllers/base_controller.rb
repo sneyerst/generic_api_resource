@@ -36,7 +36,7 @@ class BaseController < ActionController::Base
 
   def new
     if can? :create, self.class::RESOURCE_CLASS
-      @generic_resource = self.class::RESOURCE_CLASS.new
+      @generic_resource = self.class::RESOURCE_CLASS.new(resource_params)
       render "api/v1/#{self.class::RESOURCE_VIEW}/show"
     else
       render json: {error: :forbidden}, status: :forbidden
