@@ -9,12 +9,12 @@ class BaseController < ActionController::Base
 
   def index
     if can? :read, self.class::RESOURCE_CLASS
+      @filters = params
       if params[:filters_only].present?
         @generic_resources = []
         render "api/v1/#{self.class::RESOURCE_VIEW}/index"
       else
         @generic_resources = self.class::RESOURCE_CLASS.all
-        @filters = params
         filter_params.keys.each do |key|
           value = filter_params[key]
           if value.present?
