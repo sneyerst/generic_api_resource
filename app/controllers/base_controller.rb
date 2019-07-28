@@ -9,17 +9,22 @@ class BaseController < ActionController::Base
 
   def index
     if can? :read, self.class::RESOURCE_CLASS
-      @generic_resources = self.class::RESOURCE_CLASS.all
-      @filters = params
-      filter_params.keys.each do |key|
-        value = filter_params[key]
-        if value.present?
-          value = true if value == 'true'
-          value = false if value == 'false'
-          @generic_resources = @generic_resources.send("filter_#{key}", value)
+      if params[:filters_only].present?
+        @generic_resources = []
+        render "api/v1/#{self.class::RESOURCE_VIEW}/index"
+      else
+        @generic_resources = self.class::RESOURCE_CLASS.all
+        @filters = params
+        filter_params.keys.each do |key|
+          value = filter_params[key]
+          if value.present?
+            value = true if value == 'true'
+            value = false if value == 'false'
+            @generic_resources = @generic_resources.send("filter_#{key}", value)
+          end
         end
+        render "api/v1/#{self.class::RESOURCE_VIEW}/index"
       end
-      render "api/v1/#{self.class::RESOURCE_VIEW}/index"
     else
       render json: {error: :forbidden}, status: :forbidden
     end
