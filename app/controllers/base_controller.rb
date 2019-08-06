@@ -54,7 +54,7 @@ class BaseController < ActionController::Base
       if @generic_resource.save
         render "api/v1/#{self.class::RESOURCE_VIEW}/show"
       else
-        render json: @generic_resource.errors.as_json, status: :unprocessable_entity
+        render json: @generic_resource.errors.uniq.as_json, status: :unprocessable_entity
       end
     else
       render json: {error: :forbidden}, status: :forbidden
@@ -77,7 +77,7 @@ class BaseController < ActionController::Base
       if @generic_resource.update_attributes(resource_params)
         render "api/v1/#{self.class::RESOURCE_VIEW}/show"
       else
-        render json: @generic_resource.errors.as_json, status: :unprocessable_entity
+        render json: @generic_resource.errors.uniq.as_json, status: :unprocessable_entity
       end
     else
       render json: {error: :forbidden}, status: :forbidden
