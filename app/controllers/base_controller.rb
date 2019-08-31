@@ -14,7 +14,7 @@ class BaseController < ActionController::Base
         @generic_resources = []
         render "api/v1/#{self.class::RESOURCE_VIEW}/index"
       else
-        @generic_resources = self.class::RESOURCE_CLASS.all
+        @generic_resources = self.class::RESOURCE_CLASS.accessible_by(current_ability)
         filter_params.keys.each do |key|
           value = filter_params[key]
           if value.present?
@@ -31,8 +31,8 @@ class BaseController < ActionController::Base
   end
 
   def show
-    if can? :read, self.class::RESOURCE_CLASS
-      @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
+    @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
+    if can? :read, @generic_resource
       render "api/v1/#{self.class::RESOURCE_VIEW}/show"
     else
       render json: {error: :forbidden}, status: :forbidden
@@ -49,8 +49,8 @@ class BaseController < ActionController::Base
   end
 
   def create
-    if can? :create, self.class::RESOURCE_CLASS
-      @generic_resource = self.class::RESOURCE_CLASS.new(resource_params)
+    @generic_resource = self.class::RESOURCE_CLASS.new(resource_params)
+    if can? :create, @generic_resource
       if @generic_resource.save
         render "api/v1/#{self.class::RESOURCE_VIEW}/show"
       else
@@ -63,7 +63,7 @@ class BaseController < ActionController::Base
 
 
   def edit
-    if can? :create, self.class::RESOURCE_CLASS
+    if can? :update, self.class::RESOURCE_CLASS
       redirect_to action: :show
     else
       render json: {error: :forbidden}, status: :forbidden
@@ -72,8 +72,8 @@ class BaseController < ActionController::Base
 
 
   def update
-    if can? :create, self.class::RESOURCE_CLASS
-      @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
+    @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
+    if can? :update, @generic_resource
       if @generic_resource.update_attributes(resource_params)
         render "api/v1/#{self.class::RESOURCE_VIEW}/show"
       else
@@ -85,8 +85,8 @@ class BaseController < ActionController::Base
   end
 
   def destroy
-    if can? :destroy, self.class::RESOURCE_CLASS
-      @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
+    @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
+    if can? :destroy, @generic_resource
       @generic_resource.destroy
       render json: {status: :ok}
     else
