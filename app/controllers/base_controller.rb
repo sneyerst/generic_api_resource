@@ -6,6 +6,7 @@ class BaseController < ActionController::Base
   RESOURCE_NAME_SINGULAR = nil # Symbol
   RESOURCE_NAME_PLURAL = nil # Symbol
   RESOURCE_VIEW = nil # Symbol
+  ORDER_FIELD = nil # Symbol
 
   def index
     if can? :read, self.class::RESOURCE_CLASS
@@ -22,6 +23,9 @@ class BaseController < ActionController::Base
             value = false if value == 'false'
             @generic_resources = @generic_resources.send("filter_#{key}", value)
           end
+        end
+        if self.class::ORDER_FIELD
+          @generic_resources = @generic_resources.order(self.class::ORDER_FIELD)
         end
         render "api/v1/#{self.class::RESOURCE_VIEW}/index"
       end
