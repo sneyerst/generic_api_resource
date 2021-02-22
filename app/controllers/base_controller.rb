@@ -78,7 +78,7 @@ class BaseController < ActionController::Base
   def update
     @generic_resource = self.class::RESOURCE_CLASS.find(params[:id])
     if can? :update, @generic_resource
-      if @generic_resource.update_attributes(resource_params)
+      if @generic_resource.update(resource_params)
         render "api/v1/#{self.class::RESOURCE_VIEW}/show"
       else
         render json: @generic_resource.errors.as_json, status: :unprocessable_entity
